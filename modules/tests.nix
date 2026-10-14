@@ -8,14 +8,16 @@
   perSystem =
     { pkgs, ... }:
     let
-      testCasesDir = self + "/test-cases";
-      allTestCases = builtins.attrNames (
-        lib.filterAttrs (_name: type: type == "directory") (builtins.readDir testCasesDir)
-      );
-      testCases = lib.remove "collisions" allTestCases;
+      testsDir = self + "/tests";
+      allTests =
+        builtins.readDir testsDir
+        |> lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".nix" name)
+        |> builtins.attrNames
+        |> map (lib.removeSuffix ".nix");
+      tests = lib.remove "collisions" allTests;
       testFlake =
-        dirname:
-        pkgs.writeText "test-case-${dirname}-flake.nix" ''
+        name:
+        pkgs.writeText "test-${name}-flake.nix" ''
           {
             inputs = {
               agent-files.url = "${self}";
@@ -41,11 +43,14 @@
           pkgs.git
           pkgs.nix
         ];
-        text = lib.concatMapStringsSep "\n" (dirname: ''
-          echo "== ${dirname} =="
+        text = lib.concatMapStringsSep "\n" (name: ''
+          echo "== ${name} =="
           work=$(mktemp -d)
-          cp ${testFlake dirname} "$work/flake.nix"
-          cp -r ${testCasesDir + "/${dirname}"}/* "$work/"
+          cp ${testFlake name} "$work/flake.nix"
+          cp ${testsDir + "/${name}.nix"} "$work/module.nix"
+          for resource in ${testsDir + "/${name}"}-*; do
+            [ -e "$resource" ] && cp "$resource" "$work/''${resource##*/${name}-}"
+          done
           git -C "$work" init -q
           git -C "$work" config user.name test
           git -C "$work" config user.email test@example.com
@@ -53,18 +58,18 @@
           git -C "$work" commit -qm init
           (cd "$work" && nix --extra-experimental-features 'nix-command flakes' run .)
           rm -rf "$work"
-        '') testCases;
+        '') tests;
       };
     in
     {
       apps.integration-tests = {
         type = "app";
         program = lib.getExe integrationTests;
-        meta.description = "Run integration test cases outside the Nix sandbox";
+        meta.description = "Run integration flake-parts module tests outside the Nix sandbox";
       };
 
-      checks.test-cases-present = pkgs.runCommandLocal "test-cases-present" { } ''
-        test ${toString (builtins.length allTestCases)} -ge 15
+      checks.tests-present = pkgs.runCommandLocal "tests-present" { } ''
+        test ${toString (builtins.length allTests)} -ge 15
         touch $out
       '';
     };
