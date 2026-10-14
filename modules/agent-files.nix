@@ -33,6 +33,13 @@ let
 
       render = value: context: if lib.isFunction value then value context else value;
 
+      generatedNotice = ''
+        # DO-NOT-EDIT
+
+        This directory was auto-generated using github:jarvahl/agent-files.
+        Use `nix run .#write-files` to regenerate it.
+      '';
+
       scriptRecords = lib.flatten (
         lib.mapAttrsToList (
           skillName: skill:
@@ -106,6 +113,10 @@ let
         ''
         + referencesSection skillName skill
         + scriptsSection skillName skill;
+
+      noticeFiles = lib.optionalAttrs (cfg.instructions != null || cfg.skills != { }) {
+        ".agents/README.md".text = generatedNotice;
+      };
 
       agentFiles = lib.optionalAttrs (cfg.instructions != null) {
         "AGENTS.md".text = cfg.instructions;
@@ -241,11 +252,6 @@ let
         perSystem =
           { pkgs, ... }:
           {
-            files = {
-              file = agentFiles // skillFiles // referenceFiles;
-              writer.app = true;
-            };
-
             apps = lib.listToAttrs (
               map (record: {
                 name = record.appName;
@@ -262,6 +268,11 @@ let
                 };
               }) scriptRecords
             );
+
+            files = {
+              file = noticeFiles // agentFiles // skillFiles // referenceFiles;
+              writer.app = true;
+            };
           };
       };
     };
