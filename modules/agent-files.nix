@@ -33,12 +33,7 @@ let
 
       render = value: context: if lib.isFunction value then value context else value;
 
-      generatedNotice = ''
-        # DO-NOT-EDIT
-
-        This directory was auto-generated using github:jarvahl/agent-files.
-        Use `nix run .#write-files` to regenerate it.
-      '';
+      generatedNotice = "<!-- DO-NOT-EDIT. This file was auto-generated using github:jarvahl/agent-files. Use nix run .#write-files to regenerate it. -->";
 
       scriptRecords = lib.flatten (
         lib.mapAttrsToList (
@@ -109,17 +104,15 @@ let
           description: "${escapeYaml skill.description}"
           ---
 
+          ${generatedNotice}
+
           ${render skill.instructions context}
         ''
         + referencesSection skillName skill
         + scriptsSection skillName skill;
 
-      noticeFiles = lib.optionalAttrs (cfg.instructions != null || cfg.skills != { }) {
-        ".agents/README.md".text = generatedNotice;
-      };
-
       agentFiles = lib.optionalAttrs (cfg.instructions != null) {
-        "AGENTS.md".text = cfg.instructions;
+        "AGENTS.md".text = generatedNotice + "\n\n" + cfg.instructions;
       };
 
       skillFiles = lib.listToAttrs (
@@ -142,9 +135,9 @@ let
                 name = referencePath skillName referenceName;
                 value =
                   if reference.source == null then
-                    { text = render reference.text context; }
+                    { text = generatedNotice + "\n\n" + render reference.text context; }
                   else
-                    { source = reference.source; };
+                    { text = generatedNotice + "\n\n" + builtins.readFile reference.source; };
               }
             ) skill.references
           ) cfg.skills
@@ -270,7 +263,7 @@ let
             );
 
             files = {
-              file = noticeFiles // agentFiles // skillFiles // referenceFiles;
+              file = agentFiles // skillFiles // referenceFiles;
               writer.app = true;
             };
           };

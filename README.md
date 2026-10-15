@@ -51,12 +51,11 @@ Generated files:
 
 ```text
 AGENTS.md
-.agents/README.md
 .agents/skills/nix-testing/SKILL.md
 .agents/skills/nix-testing/references/patterns.md
 ```
 
-`.agents/README.md` contains a DO-NOT-EDIT notice and points to `nix run .#write-files` for regeneration.
+Each generated Markdown file starts with an invisible HTML DO-NOT-EDIT notice and points to `nix run .#write-files` for regeneration.
 
 ## References
 
