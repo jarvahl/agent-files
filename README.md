@@ -19,11 +19,11 @@ Declarative Agent files for Nix flakes.
 
 ```nix
 {
-  agentFiles.instructions = ''
+  agent-files.instructions = ''
     Follow the repository conventions.
   '';
 
-  agentFiles.skills.nix-testing = {
+  agent-files.skills.nix-testing = {
     description = "Test Nix modules";
     instructions = { references, scripts, ... }: ''
       # Nix Module Testing
@@ -62,7 +62,7 @@ Each generated Markdown file starts with an invisible HTML DO-NOT-EDIT notice an
 References can use `text` or `source`:
 
 ```nix
-agentFiles.skills.example.references = {
+agent-files.skills.example.references = {
   guide = {
     description = "Main guide";
     text = { references, ... }: ''
@@ -78,7 +78,7 @@ Reference paths are resolved relative to the file being rendered. From `SKILL.md
 `SKILL.md` automatically gets a References section when references exist. Disable it with:
 
 ```nix
-agentFiles.skills.example.autoReferences = false;
+agent-files.skills.example.autoReferences = false;
 ```
 
 ## Scripts
@@ -86,7 +86,7 @@ agentFiles.skills.example.autoReferences = false;
 Scripts are flake apps generated with `pkgs.writeShellApplication` and run only through `nix run`:
 
 ```nix
-agentFiles.skills.example.scripts.validate = {
+agent-files.skills.example.scripts.validate = {
   description = "Validate project";
   runtimeInputs = { pkgs }: [ pkgs.nix pkgs.git ];
   text = ''
@@ -104,7 +104,7 @@ nix run .#agent-example-validate
 `SKILL.md` automatically documents script commands. Disable it with:
 
 ```nix
-agentFiles.skills.example.autoScripts = false;
+agent-files.skills.example.autoScripts = false;
 ```
 
 ## Write and check generated files

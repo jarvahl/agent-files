@@ -7,7 +7,7 @@ let
       ...
     }:
     let
-      cfg = config.agentFiles;
+      cfg = config.agent-files;
 
       splitPath = path: lib.filter (part: part != "") (lib.splitString "/" path);
 
@@ -111,7 +111,7 @@ let
         + referencesSection skillName skill
         + scriptsSection skillName skill;
 
-      agentFiles = lib.optionalAttrs (cfg.instructions != null) {
+      agent-files = lib.optionalAttrs (cfg.instructions != null) {
         "AGENTS.md".text = generatedNotice + "\n\n" + cfg.instructions;
       };
 
@@ -147,7 +147,7 @@ let
     {
       imports = [ "${inputs.files}/flake-module.nix" ];
 
-      options.agentFiles = {
+      options.agent-files = {
         instructions = lib.mkOption {
           default = null;
           type = lib.types.nullOr lib.types.lines;
@@ -263,7 +263,7 @@ let
             );
 
             files = {
-              file = agentFiles // skillFiles // referenceFiles;
+              file = agent-files // skillFiles // referenceFiles;
               writer.app = true;
             };
           };
