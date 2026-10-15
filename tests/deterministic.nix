@@ -1,6 +1,6 @@
 { ... }:
 {
-  "agent-files".skills.example = {
+  agentFiles.skills.example = {
     description = "Example";
     instructions = "Body";
     references.guide.text = "Guide";

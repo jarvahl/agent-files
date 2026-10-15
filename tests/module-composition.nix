@@ -1,7 +1,7 @@
 { lib, ... }:
 {
-  "agent-files".instructions = lib.mkDefault "default instructions";
-  "agent-files".skills.example = {
+  agentFiles.instructions = lib.mkDefault "default instructions";
+  agentFiles.skills.example = {
     description = "Example";
     instructions = lib.mkForce "forced instructions";
     references.guide.text = lib.mkDefault "default guide";

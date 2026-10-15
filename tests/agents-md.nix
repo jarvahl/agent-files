@@ -1,6 +1,6 @@
 { ... }:
 {
-  "agent-files".instructions = ''
+  agentFiles.instructions = ''
     Follow the repository conventions.
   '';
 
