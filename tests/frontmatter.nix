@@ -1,6 +1,6 @@
 { ... }:
 {
-  agents.skills.nix-testing = {
+  "agent-files".skills.nix-testing = {
     description = "Test Nix modules";
     instructions = "Body";
   };

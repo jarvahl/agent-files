@@ -1,6 +1,6 @@
 { ... }:
 {
-  agents = {
+  "agent-files" = {
     instructions = ''
       Follow the repository conventions.
     '';
@@ -31,7 +31,7 @@
       runtimeInputs = [ pkgs.gnugrep ];
       text = ''
         ${config.files.writer.drv}/bin/write-files
-        grep -F "DO-NOT-EDIT" .agents/README.md
+        grep -F "DO-NOT-EDIT" AGENTS.md
         grep -F "Follow the repository conventions." AGENTS.md
         grep -F "Read references/patterns.md." .agents/skills/nix-testing/SKILL.md
         grep -F "Validate using nix run .#agent-nix-testing-check." .agents/skills/nix-testing/SKILL.md

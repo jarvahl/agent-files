@@ -1,6 +1,6 @@
 { ... }:
 {
-  agents.instructions = "generated";
+  "agent-files".instructions = "generated";
 
   perSystem = { pkgs, ... }: {
     files.file."AGENTS.md".text = "manual";

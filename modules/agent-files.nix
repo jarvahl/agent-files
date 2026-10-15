@@ -7,7 +7,7 @@ let
       ...
     }:
     let
-      cfg = config.agents;
+      cfg = config."agent-files";
 
       splitPath = path: lib.filter (part: part != "") (lib.splitString "/" path);
 
@@ -147,7 +147,7 @@ let
     {
       imports = [ "${inputs.files}/flake-module.nix" ];
 
-      options.agents = {
+      options."agent-files" = {
         instructions = lib.mkOption {
           default = null;
           type = lib.types.nullOr lib.types.lines;
